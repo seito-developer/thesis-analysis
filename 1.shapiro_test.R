@@ -51,7 +51,10 @@ mob_score <- data$mob_score_1 + data$mob_score_2
 shapiro.test(x=mob_score)
 hist(mob_score, main="Mob test score",  xlab="Score", xlim=c(0, max_x), ylim=c(0, max_y))
 
-hist(mob_score, col=rgb(1, 0, 0, 0.5), main="Test score (Solor v.s. Mob)", xlab="Score", xlim=range(c(solo_score, mob_score)), ylim=c(0, max(hist(solo_score, plot=FALSE)$counts, hist(mob_score, plot=FALSE)$counts)))
+hist(mob_score, col=rgb(1, 0, 0, 0.5), 
+     main="Test score (Solor v.s. Mob)", xlab="Score", 
+     xlim=c(0, max_x), 
+     ylim=c(0, max_y))
 hist(solo_score, col=rgb(0, 0, 1, 0.5), add=TRUE)
 legend("topright", legend=c("Mob Score", "Solo Score"), fill=c(rgb(1, 0, 0, 0.5), rgb(0, 0, 1, 0.5)))
 
