@@ -15,19 +15,30 @@ shapiro.test(x=data$basic_score)
 hist(data$basic_score, main="Day 1 test score(Basic Score)",  xlab="Score")
 
 ## Understanding, Fun, Motivation (Solo, Mob)
+max_y <- 30
 shapiro.test(x=data$solo_understanding)
-hist(data$solo_understanding, main="Understanding (Solo)",  xlab="Score")
+hist(data$solo_understanding, main="Understanding (Solo)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
+
 shapiro.test(x=data$solo_fun)
-hist(data$solo_fun, main="Fun (Solo)",  xlab="Score")
+hist(data$solo_fun, main="Fun (Solo)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
+
 shapiro.test(x=data$solo_motivation)
-hist(data$solo_motivation, main="Motivation (Solo)",  xlab="Score")
+hist(data$solo_motivation, main="Motivation (Solo)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
 
 shapiro.test(x=data$mob_understanding)
-hist(data$mob_understanding, main="Understanding (Mob)",  xlab="Score")
+hist(data$mob_understanding, main="Understanding (Mob)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
+
 shapiro.test(x=data$mob_fun)
-hist(data$mob_fun, main="Fun (Mob)",  xlab="Score")
+hist(data$mob_fun, main="Fun (Mob)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
+
 shapiro.test(x=data$mob_motivation)
-hist(data$mob_motivation, main="Motivation (Mob)",  xlab="Score")
+hist(data$mob_motivation, main="Motivation (Mob)",  xlab="Score", ylim=c(0, max_y))
+abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
 
 ## Test Score (Solo, Mob)
 solo_score <- data$solo_score_1 + data$solo_score_2
