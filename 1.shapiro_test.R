@@ -1,7 +1,6 @@
-# R言語のコード
 library(readr)
 
-# データセットを読み込む
+# Load dataset
 data <- read_csv("./assets/finalized_questionaire.csv")
 
 data <- na.omit(data)
@@ -40,17 +39,13 @@ shapiro.test(x=data$mob_motivation)
 hist(data$mob_motivation, main="Motivation (Mob)",  xlab="Score", ylim=c(0, max_y))
 abline(h = seq(0, max_y, by = 5), col = "gray", lty = "dotted")
 
-## Test Score (Solo, Mob)
+## Draw histgram
 max_y <- 14
 max_x <- 16
 solo_score <- data$solo_score_1 + data$solo_score_2
-shapiro.test(x=solo_score)
-hist(solo_score, main="Test Score (Solo)",  xlab="Score", xlim=c(0, max_x), ylim=c(0, max_y))
-
 mob_score <- data$mob_score_1 + data$mob_score_2
-shapiro.test(x=mob_score)
+hist(solo_score, main="Test Score (Solo)",  xlab="Score", xlim=c(0, max_x), ylim=c(0, max_y))
 hist(mob_score, main="Mob test score",  xlab="Score", xlim=c(0, max_x), ylim=c(0, max_y))
-
 hist(mob_score, col=rgb(1, 0, 0, 0.5), 
      main="Test score (Solor v.s. Mob)", xlab="Score", 
      xlim=c(0, max_x), 
@@ -58,40 +53,31 @@ hist(mob_score, col=rgb(1, 0, 0, 0.5),
 hist(solo_score, col=rgb(0, 0, 1, 0.5), add=TRUE)
 legend("topright", legend=c("Mob Score", "Solo Score"), fill=c(rgb(1, 0, 0, 0.5), rgb(0, 0, 1, 0.5)))
 
-mean(solo_score)
-mean(mob_score)
+## t-test
 
-min(solo_score)
-min(mob_score)
+### Validate
+shapiro.test(solo_score) #0.08228
+shapiro.test(mob_score) #0.07027
 
-max(solo_score)
-max(mob_score)
+### Analyze by mean
+t.test(mob_score, solo_score, paired=TRUE) #p-val: 0.0927
 
-### t-test
-t.test(solo_score, mob_score, paired = TRUE, conf.level = 0.95)
+### Analyze by under 25%
+q1_mob <- quantile(mob_score, 0.25)
+q1_solo <- quantile(solo_score, 0.25)
+lower_mob_scores <- mob_score[mob_score <= q1_mob]
+lower_solo_scores <- solo_score[solo_score <= q1_solo]
 
-### bootstrap
-bootstrap_min <- function(data, n_bootstrap) {
-  bootstrap_mins <- numeric(n_bootstrap)
-  for (i in 1:n_bootstrap) {
-    sample_data <- sample(data, replace = TRUE)
-    bootstrap_mins[i] <- min(sample_data)
-  }
-  return(bootstrap_mins)
-}
+#### align lower data length
+min_length <- min(length(lower_mob_scores), length(lower_solo_scores))
+set.seed(123)  # 結果の再現性のためにシードを設定
+lower_mob_scores_sample <- sample(lower_mob_scores, min_length)
+lower_solo_scores_sample <- sample(lower_solo_scores, min_length)
 
-# ブートストラップサンプリング
-set.seed(123)  # 結果の再現性を保証
-n_bootstrap <- 10000
-solo_min <- bootstrap_min(solo_score, n_bootstrap)
-mob_min <- bootstrap_min(mob_score, n_bootstrap)
+t.test(lower_mob_scores_sample, lower_solo_scores_sample, paired=TRUE) 
+#t = 6.1865, df = 13, p-value = 3.289e-05
 
-# 最小値の差の分布
-min_diffs <- mob_min - solo_min
-
-# 差の95%信頼区間
-quantile(min_diffs, c(0.025, 0.975))
-
-# p値の計算
-mean(min_diffs >= 0)  
-
+### F-test
+solo_score <- data$solo_score_1 + data$solo_score_2
+mob_score <- data$mob_score_1 + data$mob_score_2
+var.test(solo_score, mob_score)
